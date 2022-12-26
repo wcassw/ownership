@@ -1,0 +1,2 @@
+# ownership
+owning things
