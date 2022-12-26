@@ -71,3 +71,57 @@ results_filter=local_session.query(User).order_by(User.username).all()
 for r in results_filter:
     print(r)
 
+
+"""
+
+https://stackoverflow.com/questions/40443457/nonetype-object-has-no-attribute-username
+
+Models.py
+
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True)
+    password = db.Column(db.String(20), unique=True)
+
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password= bcrypt.generate_password_hash(password, 10)
+
+    def is_authenticated(self):
+        return True
+
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return (self.id)
+
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+Views.py
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    user = User(request.form['username'] , request.form['password'] )
+    username = request.form['username']
+    password = request.form['password']
+    storeduser = User.query.filter_by(username=username).first()
+    if storeduser.username is not None and storeduser.username == request.form['username']:
+        return 'User already Exist !'
+    else:
+        db.session.add(user)
+        db.session.commit()
+        flash('User successfully registered')
+        return redirect(url_for('index'))
+
+
+"""
